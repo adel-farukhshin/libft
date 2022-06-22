@@ -10,7 +10,9 @@ SRCS =	ft_isalpha.c	ft_isdigit.c	ft_isalnum.c	ft_isascii.c	ft_strlen.c		ft_memse
 
 OBJS = ${patsubst %.c,%.o,${SRCS}}
 
-D_FILES = ${patsubst %.c,%.d,${SRCS}}
+SRCSB = ft_lstnew_bonus.c	ft_lstadd_front.c	ft_lstsize.c	ft_lstlast.c	ft_lstadd_back.c	\
+		ft_lstdelone.c		ft_lstclear.c		ft_lstiter.c	ft_lstmap.c
+OBJSB = ${patsubst %.c,%.o,${SRCSB}}
 
 FLAGS = -Wall -Wextra -Werror
 
@@ -18,16 +20,17 @@ HEADER = libft.h
 
 all : ${NAME}
 
-${NAME} : ${OBJS}
-	ar rc ${NAME} $?
+${NAME} : ${OBJS} ${HEADER}
+	ar rc ${NAME} ${OBJS}
 
-%.o : %.c
-	gcc ${FLAGS} -c $< -o $@ -MD
+%.o : %.c ${HEADER}
+	cc ${FLAGS} -c $< -o $@
 
-include ${wildcard ${D_FILES}}
+bonus: ${OBJS} ${OBJSB} ${HEADER}
+	ar rc ${NAME} ${OBJS} ${OBJSB}
 
 clean :
-	rm -f ${OBJS} ${D_FILES}
+	rm -f ${OBJS} ${OBJSB}
 	
 fclean : clean
 	rm -f ${NAME}
