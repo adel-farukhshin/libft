@@ -1,42 +1,35 @@
 
-NAME = libft.a
+project					:= libft.a
 
-SRCS =	ft_isalpha.c	ft_isdigit.c	ft_isalnum.c	ft_isascii.c	ft_strlen.c		ft_memset.c		\
-		ft_bzero.c		ft_memcpy.c		ft_memmove.c	ft_strlcpy.c	ft_strlcat.c	ft_toupper.c	\
-		ft_tolower.c	ft_isprint.c	ft_strchr.c		ft_strrchr.c	ft_strncmp.c	ft_memchr.c		\
-		ft_memcmp.c		ft_strnstr.c	ft_atoi.c		ft_strdup.c		ft_calloc.c		ft_substr.c		\
-		ft_strjoin.c	ft_strtrim.c	ft_split.c		ft_itoa.c		ft_strmapi.c	ft_striteri.c	\
-		ft_putchar_fd.c	ft_putstr_fd.c	ft_putendl_fd.c ft_putnbr_fd.c 									\
+inc_dir					:= ./inc
+src_dir					:= ./src
+obj_dir					:= ./obj
+dirs					:= ${inc_dir} ${src_dir}
 
-OBJS = ${patsubst %.c,%.o,${SRCS}}
+sources					:= $(wildcard ${src_dir}/*.c)
+objects					:= $(subst .c,.o,$(subst ${src_dir},${obj_dir},${sources}))
+header					:= ${inc_dir}/libft.h
 
-SRCSB = ft_lstnew_bonus.c		ft_lstadd_front_bonus.c		ft_lstsize_bonus.c		ft_lstlast_bonus.c	\
-		ft_lstadd_back_bonus.c	ft_lstdelone_bonus.c		ft_lstclear_bonus.c		ft_lstiter_bonus.c	\
-		ft_lstmap_bonus.c
+CC						:= cc
+CFLAGS					:= -I${inc_dir} -g -Wall -Wextra -Werror -O0
 
-OBJSB = ${patsubst %.c,%.o,${SRCSB}}
+.PHONY: all  clean fclean re 
 
-FLAGS = -Wall -Wextra -Werror
+all: ${project}
 
-HEADER = libft.h
+${project}: ${objects} 
+	ar rc ${project} ${objects}
 
-all : ${NAME}
+${obj_dir}/%.o: ${src_dir}/%.c ${header} | ${obj_dir}
+	${CC} ${CFLAGS} -c -o ${@} ${<} 
 
-${NAME} : ${OBJS} ${HEADER}
-	ar rc ${NAME} ${OBJS}
+${obj_dir}:
+	mkdir -p ${@}
 
-%.o : %.c ${HEADER}
-	cc ${FLAGS} -c $< -o $@
+clean:
+	rm -f ${objects}
 
-bonus: ${OBJS} ${OBJSB} ${HEADER}
-	ar rc ${NAME} ${OBJS} ${OBJSB}
+fclean: clean
+	rm -f ${project}
 
-clean :
-	rm -f ${OBJS} ${OBJSB}
-	
-fclean : clean
-	rm -f ${NAME}
-		
 re: fclean all
-
-.PHONY: all clean fclean re 
